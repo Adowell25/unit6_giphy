@@ -2,7 +2,7 @@ $(document).ready({
 });
 
 var starterAnimals = ["lion", "tiger", "bear", "snake", "hippo", "pig", "turtle", "gorilla"];
-
+//creates the starter animal buttons
 function createButtons(){
     $.map(starterAnimals, topic => {
         var animalButtons = $("<button>");
@@ -14,7 +14,7 @@ function createButtons(){
 }
 
 createButtons();
-
+//creates buttons when submit is pushed
 $("#animalTxt").on('click', function(event){
     event.preventDefault();
     $("#animalButtons").empty();
@@ -24,10 +24,10 @@ $("#animalTxt").on('click', function(event){
 
 });
 
-
 //Gif functions
-$("#animalTxt").on('click', function(event){
+$(document).on('click', '.animalBTN', function(event){
     event.preventDefault();
+    $("#resultsContainer").empty();
     var btnData = $(this).attr("animalName");
     var animalValue = btnData;
     
@@ -38,14 +38,28 @@ $("#animalTxt").on('click', function(event){
         method: "GET"
     }).then(function(response) {
         console.log(response);
+        $("#resultsContainer").empty();
+        $.map(response.data, gif => {
+            var gifRating = gif.rating;
+            var stillGif = gif.images.downsized_still.url;
+            var liveGif = gif.images.downsized_medium.url;
 
-        var imageUrl = response.data.images.downsized.url;
+            var gifDiv = $("<div>").addClass("gif-div");
+            var imgDiv = $("<div>").addClass("gif-img");
+            var Rating = $("<p> Rating: " + gifRating + "</p>");
+            var gifImg = $("<img alt ='img'>")
+                            .addClass("jpeg")
+                            .attr("src", stillGif)
+                            .attr("data-jpeg_src", liveGif);
+            
+           
+        $("#resultsContainer").append(gifDiv);
+        gifDiv.append(imgDiv);
+        imgDiv.append(Rating);
+        imgDiv.append(gifImg);
 
-        var imgDiv = $("<img>");
-            imgDiv.attr("src", imageUrl);
-            imgDiv.attr("alt", "animal image");
-
-        $("#resultsContainer").append(imgDiv);
+        });
+        
 
 
         // for ( var i = 0; i < response.length; i++){
